@@ -1,0 +1,11 @@
+test
+documentation
+api/instance/*
+
+app/build
+app/node_modules
+app/Dockerfile*
+app/*.log
+app/argosdb*
+app/.env.*
+
