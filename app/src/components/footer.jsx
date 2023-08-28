@@ -1,50 +1,43 @@
 import React, { Component } from "react";
 import { SocialIcon } from 'react-social-icons';
+import { Link } from "react-router-dom";
+import { Markup } from 'interweave';
 
-
-class Footer extends Component {
+class Globalfooter extends Component {
   render() {
+    var s = {fontSize:"18px", marginRight:"40px", textDecoration:"none", color:"#fff"};
+    var footerLinks = [];
+    for (var i in this.props.initObj.footer.links){
+        var obj = this.props.initObj.footer.links[i];
+        footerLinks.push(<Link id={"link_" +i} key={"link_" + i} href={obj.url} style={s}>{obj.label}</Link>);
+    }
+    var funding = ("funding" in this.props.initObj.footer ? this.props.initObj.footer.funding : "");
+    var license = ("license" in this.props.initObj.footer ? this.props.initObj.footer.license : "");
+
+    var logoImages = [];
+    for (var i in this.props.initObj.footer.logos){
+        var url = this.props.initObj.footer.logos[i];
+        logoImages.push(<img src={process.env.PUBLIC_URL + url} style={{width:"150px", margin:"0px 20px 0px 0px"}}/>);
+    }
+
+    var s = {width:"100%", background:"DodgerBlue", color:"#fff", margin:"0px 0px 0px 0px"}; 
+    var sOne = {width:"80%", textAlign:"center", margin:"30px 10% 20px 10%"};
+    var sTwo = {width:"80%", textAlign:"center",fontSize:"20px",margin:"0px 10% 20px 10%"};
+    var sThree = {width:"80%", textAlign:"center",fontSize:"16px",margin:"0px 10% 20px 10%"};
+    var sFour = {width:"80%", textAlign:"center", margin:"0px 10% 30px 10%"};
     return (
-    <section className="border">
-      <footer className="text-center text-lg-start bg-light text-muted">
-
-        <section className="globalfooter" style={{padding:"0px", border:"0px dashed orange"}}>
-          <div className="container text-center text-md-start " 
-              style={{height:"200px",border:"0px dashed orange"}}>
-            <div className="row mt-3" style={{ display:"none",border:"0px dashed orange"}}>
-              <div className="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4" style={{width:"40%"}}>
-                  <span className="text-uppercase fw-bold mb-4">ABOUT</span><br/>
-                      Here you can use rows and columns to organize your footer content. Lorem ipsum
-                      dolor sit amet, consectetur adipisicing elit. Lorem ipsum
-                      dolor sit amet, consectetur adipisicing elit. Lorem ipsum
-                      dolor sit amet, consectetur adipisicing elit.
-              </div>
-
-              <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-                  <span className="text-uppercase fw-bold mb-4">QUICK LINKS</span><br/>
-                    <a href="#!" className="text-reset">About Us</a><br/>
-                    <a href="#!" className="text-reset">Contact Us</a><br/>
-                    <a href="#!" className="text-reset">Privacy Policy</a><br/>
-                    <a href="#!" className="text-reset">Sitemap</a>
-              </div>
-
-              <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-                  <span className="text-uppercase fw-bold mb-4">CONTACT</span><br/>
-                    Addrss: New York, NY 10012, US<br/>
-                    Email: info@example.com<br/>
-                    Phone: + 01 234 567 88<br/>
-              </div>
-            </div>
-          </div>
-      </section>
-
-      <div className="text-left p-4" style={{background: "DodgerBlue", color:"#fff", borderTop:"1px solid #fff"}}>
-      </div>
-    </footer>
-  </section>
-
+        <div className="leftblock" style={s}>
+            <div className="leftblock" style={sOne}>{footerLinks}</div>
+            <div className="leftblock" style={sTwo}><Markup content={funding}/></div>
+            <div className="leftblock" style={sThree}><Markup content={license}/></div>
+            <div className="leftblock" style={sFour}>{logoImages}</div> 
+        </div>
     );
+
+
+
+
   }
 }
 
-export default Footer;
+export default Globalfooter;

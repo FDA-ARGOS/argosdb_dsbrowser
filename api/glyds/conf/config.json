@@ -1,0 +1,215 @@
+{
+    "qcinfo":{
+      "glyco_site":{
+        "requiredfields":["uniprotkb_ac","start_pos", "end_pos", "site_seq", "glytoucan_ac", "glyco_type","xref_id", "citation_id","citation_type", "notes"]
+      },
+      "glyco_site_unicarbkb":{
+        "requiredfields":["protein","position", "toucan", "id", "aminoacid","aminoacidtype", "pmid", "notes"]
+      }
+    },
+    "collinfo":{
+        "c_init":{
+            "get_one":{
+                "prj":{},
+                "queryfields":{}
+            }
+        },
+        "c_cache":{
+            "get_one":{
+                "prj":{},
+                "queryfields":{
+                    "list_id":{
+                      "required":true,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[{"path":"list_id","operator":"$regex"}]
+                    }
+                } 
+            }
+        },
+        "c_html":{
+            "get_one":{
+                "prj":{"pageid":1,"cn":1},
+                "queryfields":{
+                    "pageid":{
+                      "required":true,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[{"path":"pageid","operator":"$eq"}]
+                    }
+                }
+            }
+        },
+        "c_history":{
+            "get_one":{
+                "prj":{ },
+                "queryfields":{
+                    "doctype":{
+                      "required":true,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[{"path":"doctype","operator":"$eq"}]
+                    },
+                    "bcoid":{
+                      "required":true,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[{"path":"bcoid","operator":"$eq"}]
+                    }
+                }
+            },
+            "get_many":{
+                "prj":{},
+                "queryfields":{
+                    "doctype":{
+                      "required":true,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[{"path":"doctype","operator":"$eq"}]
+                    }
+                }
+            }
+        },
+        "c_records":{
+          "get_one":{
+            "prj":{},
+            "queryfields":{
+              "recordid":{
+                "required":true,
+                "datatype":"string",
+                "junction":"$or",
+                "pathlist":[{"path":"recordid","operator":"$eq"}]
+              }
+            }
+          },
+          "get_many":{
+            "prj":{},
+            "sortfield":"",
+            "queryfields":{
+              "query":{
+                "required":false,
+                "datatype":"string",
+                "junction":"$or",
+                "pathlist":[
+                  {"path":"recordid", "operator":"$regex"},
+                  {"path":"row", "operator":"$regex"}
+                ]
+              }
+            }
+          }
+        },
+        "c_extract":{
+            "get_one":{
+                "prj":{},
+                "queryfields":{
+                    "bcoid":{
+                      "required":true,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[{"path":"bcoid","operator":"$eq"}]
+                    }
+                }
+            },
+            "get_many":{
+                "prj":{
+                    "bcoid": 1,
+                    "title": 1,
+                    "description": 1,
+                    "filename": 1,
+                    "filetype": 1,
+                    "categories": 1,
+                    "minitable": 1,
+                    "iconfilename": 1
+                },
+                "sortfield":"bcoid",
+                "queryfields":{
+                    "query":{
+                      "required":false,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[
+                          {"path":"bcoid", "operator":"$regex"},
+                          {"path":"title", "operator":"$regex"},
+                          {"path":"description", "operator":"$regex"},
+                          {"path":"filename", "operator":"$regex"},
+                          {"path":"categories.species", "operator":"$regex"},
+                          {"path":"categories.molecule", "operator":"$regex"},
+                          {"path":"categories.tags", "operator":"$regex"}
+                      ]
+                    }
+                }
+            }
+        },
+        "c_bco":{
+            "get_one":{
+                "prj":{},
+                "queryfields":{
+                    "bcoid":{
+                      "required":true,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[{"path":"object_id","operator":"$regex"}]
+                    }
+                }
+            },
+            "get_many":{
+                "prj":{},
+                "queryfields":{
+                    "query":{
+                      "required":false,
+                      "datatype":"string",
+                      "junction":"$or",
+                      "pathlist":[
+                          {"path":"object_id", "operator":"$regex"},
+                          {"path":"provenance_domain.name", "operator":"$regex"},
+                          {"path":"usability_domain", "operator":"$regex"},
+                          {"path":"extension_domain.dataset_extension.dataset_categories.category_value", "operator":"$regex"},
+                          {"path":"io_domain.output_subdomain.uri.filename", "operator":"$regex"}
+                      ]
+                    }
+                }
+            }
+        }
+
+    }
+    ,"rootinfo":{
+    }
+    ,"pathinfo":{
+    }
+    ,"bco_field_order":{
+      "object_id":0.1
+      ,"type":0.2
+      ,"etag":0.3
+      ,"spec_version":0.4
+      ,"provenance_domain":1.0
+      ,"name": 1.1
+      ,"version": 1.3
+      ,"license": 1.4
+      ,"derived_from": 1.5
+      ,"created": 1.6
+      ,"modified": 1.7
+      ,"obsolete_after": 1.8
+      ,"review": 1.9
+      ,"status": 1.91
+      ,"reviewer_comment":1.92
+      ,"reviewer":1.930
+      ,"orcid":1.96
+      ,"affiliation":1.97
+      ,"usability_domain":2.0
+      ,"extension_domain":3.0
+      ,"description_domain":4.0
+      ,"execution_domain":5.0
+      ,"parametric_domain":6.0
+      ,"io_domain":7.0
+      ,"error_domain":9.0
+    }
+}
+
+
+
+
+
+
+
+
+

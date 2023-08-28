@@ -22,68 +22,10 @@ html, body{
 .globalheader_logo {
     display:block;
     float:left;
-    width:180px;
-    height:55px;
-    margin:10px 0px 0px 0px;
-    font-family: 'Gruppo', cursive;
-    border:0px dashed orange;
-}
-.globalheader_logo_img {
-    float:left;
-    width:40px;
-    margin:0px 0px -18px 5px;
-    border:0px dashed orange;
-
-}
-.globalheader_logo_txt {
-    display:block;
-    float:left;
-    width:100%;
-    padding:0px;
-    border:0px dashed red;
-}
-
-.globalheader_logo_txt_one {
-    display:block;
-    float:left;
-    font-size:30px;
-    font-family: 'Gruppo', sans-serif;
-    color:#ff8000;
-    padding:0px;
-    border:0px dashed blue;
-}
-.globalheader_logo_txt_two {
-    display:block;
-    float:left;
-    font-size:30px;
-    font-family: 'Gruppo', sans-serif;
-    color:#333333;
-    padding:0px 0px 0px 0px !important;
-    border:0px dashed blue;
-}
-
-
-
-
-.globalheader_global_links {
-    display:block;
-    float:right;
-    width:70%;
-    margin:30px 0% 0px 0%;
+    font-size:35px !important;
     border:0px dashed orange;
 }
 
-
-
-.globalheader_icon {
-    display:block;
-    float:right;
-    cursor:pointer;
-    color:#777;
-    font-size: 24px !important;
-    margin: 3px 0px 0px 20px;
-    border:0px dashed red;
-}
 
 .versioncn{
     display:block;
@@ -116,15 +58,41 @@ html, body{
     border:0px dashed orange;
 }
 
+.search_label{
+    display:block;
+    float:left;
+    font-size:18px;
+    width:11% !important;
+    margin:5px 0px 10px 10px;
+    border:0px solid red;
+}
+
+
+.search_paper_wrapper{
+    display:block;
+    float:left;
+    width:70% !important;
+    border:0px solid red;
+}
+
+.search_examples{
+    display:block;
+    float:left;
+    width:70% !important;
+    margin:0px 0px 0px 0px;
+    font-size:14px;
+    color:#777;
+    border:0px solid red;
+}
+
 .searchbox_paper {
     padding:0px 0px 0px 2px;
     display:flex;
     align-items:right;
     width:100%;
-    min-width:300px;
-    height:35px;
+    min-width:100px;
+    height:38px;
     border:1px solid #eee;
-    
 }
 .searchbox_input {
     padding:0px 15px 0px 15px;
@@ -149,57 +117,77 @@ html, body{
 .filter_div_one{
     min-height:25px;
     width:100%;
-    padding:2px;
-    margin-top:0px;
+    padding:20px 10px 10px 10px;
+    margin:0px 0px 20px 0px;
     border:1px solid #ddd;
-    border-radius:10px 10px 10px 10px;
-    background:#fff;
+    border-radius:10px;
 }
 
-
-.filter_div_two {
-    display:block;
-    float:left;
+.filter_div_two{
     width:100%;
-    padding: 5px;
+    padding:10px;
+    margin:0px 0px 20px 0px;
     border:1px solid #ddd;
-    border-radius:10px 10px 10px 10px;
+    border-radius:10px;
 }
 
-.filter_div_three {
-    display: none;
-    float: left;
-    width: 100%;
-    min-height: 100px;
-    margin:0px;
-    background: #f6f6f6;
-    border-top:1px solid #ccc;
+.filtericoncn {
+    display:none !important;
+    cursor:pointer;
+    z-index:2;
 }
 
-.filter_div_four {
+
+
+div.searchboxwrapper{
     display:block;
     float:left;
-    margin:10px 10px 10px 10px;
-    padding:10px; 
+    width:90%;
+    margin:20px 5% 20px 5%;
+    padding:20px 10px 20px 10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+div.filterboxwrapper{
+    display:block;
+    float:left;
+    width:20%;
+    margin:5px 0px 0px 5%;
+    border:0px dashed orange;
+}
+
+div.statscn{
+    display:block;
+    float:left;
+    width:90%;
+    margin:20px 5% 0px 5%;
+    padding:10px;
+    z-index:1;
     border:1px solid #ddd;
-    font-size:14px; 
     border-radius:10px;
 }
 
 
-div.pagecn{
+div.searchresultscn{
     display:block;
-    overflow:auto;
-    width:84%;
-    margin:0px 8% 500px 8%;
-    /*min-height:1000px !important;*/
+    float:left;
+    width:69%;
+    margin:5px 1% 500px 10px;
     font-family: 'Montserrat', sans-serif; 
-    font-size:17px;
-    color:#333;
-    padding:0px;
     z-index:1;
     border:0px dashed orange;
- }
+}
+
+div.pagecn{
+    display:block;
+    float:left;
+    width:90%;
+    margin:20px 5% 500px 5%;
+    font-family: 'Montserrat', sans-serif;
+    z-index:1;
+    border:0px dashed orange;
+}
 
 
 .navlink{
@@ -338,5 +326,33 @@ span.faqquestionid{
 
 .globalfooter {
     background:DodgerBlue;
+}
+
+.dgheader{
+  font-size:16px;
+  background:#f1f1f1;
+}
+
+.dgcell{
+    white-space: break-spaces;
+    min-height:25px;
+}
+
+.dgcellold{
+    text-overflow: ellipsis;
+    white-space: break-spaces;
+    overflow-y: auto;
+    height: calc(100% + 2%); 
+}
+
+
+.dgcell_hg{
+  background:#ffff00;
+}
+
+
+.MuiDataGrid-root .MuiDataGrid-cell {
+    white-space: normal !important;
+    word-wrap: break-word !important;
 }
 

@@ -1,4 +1,4 @@
-graft argosdb/conf
+graft glygen/conf
 global-exclude *.pyc
 
 

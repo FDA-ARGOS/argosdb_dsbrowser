@@ -2,7 +2,7 @@ import React, { Component } from "react";
 //import Navbar from 'navbar-react'
 //import { Container} from 'react-containers';
 import { Form, FormControl, Container, Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-
+import { Markup } from 'interweave';
 
 
 class Header extends Component {
@@ -17,25 +17,37 @@ class Header extends Component {
     if (server !== "prd"){
       navbarStyle.backgroundImage = 'url("/imglib/watermark.'+server+'.png")';
     }
-  
-    console.log("headerlinks", this.props.initObj);
+    var moduleUrlDict = this.props.initObj.module_urls;
 
+    console.log("headerlinks", this.props.initObj);
+    var pageId = window.location.href.split("/")[3];
+    pageId = (pageId.trim() === "" ? "home" : pageId);
+    var sOne = {color:"#ccc", margin:"0 20px 0px 0px"};
+    var sTwo = {color:"#fff", margin:"0 20px 0px 0px"};
     var headerLinks = [];
     for (var i in this.props.initObj.headerlinks){
       var obj = this.props.initObj.headerlinks[i];  
-      headerLinks.push(<Nav.Link key={"link_" +obj.id} href={obj.url}>{obj.label}</Nav.Link>)
+      var s = (obj.id === pageId ? sOne : sTwo);
+      if (["api", "portal", "sparql"].indexOf(obj.id) !== -1){
+          obj.url = moduleUrlDict[server][obj.id];
+          //alert(obj.id + ':' + obj.url);
+      }
+      headerLinks.push(<Nav.Link id={"link_" +obj.id} key={"link_" +obj.id} href={obj.url} style={{fontWeight:"bold"}} style={s}>{obj.label}</Nav.Link>)
     }
     
+    var logoUrl = moduleUrlDict[server]["portal"];
 
     return (
       <Navbar className="globalheader"  variant="dark" expand="lg" 
         style={navbarStyle}
         >
         <Container fluid>
-          <Navbar.Brand href="/" style={{fontSize:"20px"}}>ArgosDB Datasets</Navbar.Brand>
+          <Navbar.Brand href={logoUrl} className="globalheader_logo">
+            <Markup content={this.props.initObj.logo}/>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
-            <Nav className="me-auto my-2 my-lg-0" navbarScroll style={{fontSize:"18px"}}>
+            <Nav className="me-auto my-2 my-lg-0" navbarScroll style={{fontSize:"22px", margin:"0px 0px 0px 30px"}}>
               {headerLinks}
               <NavDropdown title="About" id="navbarScrollingDropdown"
                 style={{display:"none"}}

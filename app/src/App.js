@@ -1,9 +1,13 @@
 import React, { Component } from "react";
-import SearchResults from "./components/search_results";
-import DatasetPage from "./components/dataset_page";
+import DatasetSearch from "./components/dataset_search";
+import DatasetList from "./components/dataset_list";
+import RecordList from "./components/record_list";
 import StaticPage from "./components/static_page";
 import HistoryList from "./components/history_list";
 import HistoryDetail from "./components/history_detail";
+import FileUploads from "./components/file_uploads";
+import GlycanFinder from "./components/glycan_finder";
+
 import Alertdialog from './components/dialogbox';
 import Loadingicon from "./components/loading_icon";
 import * as LocalConfig from "./components/local_config";
@@ -11,6 +15,9 @@ import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Header from "./components/header";
 import Footer from "./components/footer";
+import Gsd from "./components/gsd";
+
+
 
 
 class App extends Component {
@@ -21,6 +28,8 @@ class App extends Component {
       msg:""
     }
   };
+
+
 
   handleDialogClose = () => {
     var tmpState = this.state;
@@ -79,13 +88,38 @@ class App extends Component {
       <div className="versioncn">APP v-{app_ver} &nbsp; |&nbsp; Data v-{data_ver}</div>
       <Router>
         <Switch>
+        <Route
+            path="/gsd"
+            render={(props) => (
+              <Gsd initObj={this.state.response.record}/>
+            )}
+          />
+          <Route
+            path="/glycan_finder"
+            render={(props) => (
+              <GlycanFinder pageId={"glycanfinder"} initObj={this.state.response.record}/>
+            )}
+          />
+          <Route
+            path="/uploads"
+            render={(props) => (
+              <FileUploads pageId={"File Uploads"} initObj={this.state.response.record}/>
+            )}
+          />
           <Route
             path="/history_list"
             render={(props) => (
               <HistoryList pageId={"History List"}  initObj={this.state.response.record}/>
             )}
           />
-          <Route
+        <Route
+            exact
+            path="/results/:listId"
+            render={(props) => (
+            <DatasetList  initObj={this.state.response.record} listId={props.match.params.listId}/>
+            )}
+          />
+        <Route
             path="/:bcoId/:dataVersion/history"
             render={(props) => (
               <HistoryDetail bcoId={props.match.params.bcoId} dataVersion={props.match.params.dataVersion}  initObj={this.state.response.record}/>
@@ -96,23 +130,23 @@ class App extends Component {
             render={(props) => (
               <StaticPage pageId={props.match.params.pageId}  initObj={this.state.response.record}/>
             )}
-          />
-          <Route
+        />
+        <Route
             path="/:bcoId"
             render={(props) => (
-              <DatasetPage bcoId={props.match.params.bcoId}  initObj={this.state.response.record}/>
+              <RecordList bcoId={props.match.params.bcoId} initObj={this.state.response.record}/>
             )}
-          />
-          <Route
+        />
+        <Route
             exact
             path="/"
             render={(props) => (
-              <SearchResults  initObj={this.state.response.record}/>
+              <DatasetSearch  initObj={this.state.response.record}/>
             )}
           />
         </Switch>
       </Router>
-      <Footer />
+      <Footer initObj={this.state.response.record}/>
       </div>
     );
 

@@ -1,0 +1,6 @@
+
+ ... started loading c_ngsqc  [2023-07-12 06:25:39.495755]
+ ... loaded 1000/3831 documents to c_ngsqc (from ngsqcdb) [2023-07-12 06:25:40.409166]
+ ... loaded 2000/3831 documents to c_ngsqc (from ngsqcdb) [2023-07-12 06:25:41.282349]
+ ... loaded 3000/3831 documents to c_ngsqc (from ngsqcdb) [2023-07-12 06:25:42.156556]
+ ... finished loading 3831/3831 documents to c_ngsqc (from ngsqcdb) [2023-07-12 06:25:42.852000]

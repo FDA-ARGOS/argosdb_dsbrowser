@@ -2,12 +2,21 @@ import React, { Component } from "react";
 import Alertdialog from './dialogbox';
 import Loadingicon from "./loading_icon";
 import * as LocalConfig from "./local_config";
-import { Chart } from "react-google-charts";
-import { Link } from "react-router-dom";
+//import { Chart } from "react-google-charts";
+import Tableview from "./table";
+import {getColumns} from "./columns";
+
+import { Link, useLocation } from "react-router-dom";
+
 import DoubleArrowOutlinedIcon from '@material-ui/icons/DoubleArrowOutlined';
 import { Markup } from 'interweave';
 import $ from "jquery";
 import {sortReleaseList} from "./util";
+
+import download from "downloadjs";
+
+
+
 
 var verInfo = {};
 
@@ -15,12 +24,14 @@ class DatasetPage extends Component {
   
   state = {
     ver:"",
-    tabidx:"sampleview",
+    bco:{},
+    tabidx: this.props.rowList.length > 0 ? "resultview" : "contentview",
     dialog:{
       status:false, 
       msg:""
     }
   };
+
 
   
   handleDialogClose = () => {
@@ -39,9 +50,13 @@ class DatasetPage extends Component {
   }
 
   componentDidMount() {
-      var reqObj = { bcoid:this.props.bcoId, dataversion:this.props.initObj.dataversion};
-      this.fetchPageData(reqObj); 
-  
+    var rowList = (this.props.rowList === undefined ? [] : this.props.rowList);
+    var reqObj = { 
+      bcoid:this.props.bcoId, 
+      rowlist:this.props.rowList,
+      dataversion:this.props.initObj.dataversion
+    };
+    this.fetchPageData(reqObj); 
   }
 
 
@@ -56,29 +71,74 @@ class DatasetPage extends Component {
     };
     const svcUrl = LocalConfig.apiHash.dataset_detail;
 
-    fetch(svcUrl, requestOptions)
-      .then((res) => res.json())
-      .then(
+
+    fetch(svcUrl, requestOptions).then((res) => res.json()).then(
         (result) => {
-          var tmpState = this.state;
-          tmpState.response = result;
-          tmpState.isLoaded = true;          
-          if (tmpState.response.status === 0){
-            tmpState.dialog.status = true;
-            tmpState.dialog.msg = tmpState.response.error;
-          }
-          this.setState(tmpState);
-          //console.log("Request:",svcUrl);
-          console.log("Ajax response:", result);
+            //console.log("Request:",svcUrl);
+            //console.log("Ajax response:", result);
+            var tmpState = this.state;
+            tmpState.response = result;
+            tmpState.bco = result.record.bco;
+            tmpState.isLoaded = true;          
+            if (tmpState.response.status === 0){
+                tmpState.dialog.status = true;
+                tmpState.dialog.msg = tmpState.response.error;
+            }
+            this.setState(tmpState);
+        },
+        (error) => { 
+            this.setState({isLoaded: true,error,});
+        }
+    );
+
+  }
+
+ handleDownloadBco = (e) => {
+    e.preventDefault();
+    var buffer = JSON.stringify(this.state.bco, null, 2);
+    download(new Blob([buffer]), this.props.bcoId + ".json", "text/plain");
+ }
+
+ handleDownloadMatchedRecords = (e) => {
+    e.preventDefault();
+    var rowList = (this.props.rowList === undefined ? [] : this.props.rowList);
+    var reqObj = {
+      bcoid:this.props.bcoId,
+      rowlist:this.props.rowList,
+      dataversion:this.props.initObj.dataversion
+    };
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reqObj)
+    };
+    const svcUrl = LocalConfig.apiHash.dataset_download;
+    fetch(svcUrl, requestOptions).then((res) => res.json()).then(
+        (result) => {
+            //console.log("Request:",svcUrl);
+            //console.log("DDDDD:", result);
+            if (result.status === 0){
+                var tmpState = this.state; 
+                tmpState.isLoaded = true;
+                tmpState.dialog.status = true;
+                tmpState.dialog.msg = result.error;
+                this.setState(tmpState);
+            }
+            else{
+                var buffer = "";
+                for (var i in result.rowlist){
+                    var row = result.rowlist[i];
+                    buffer += row.join("\t") + "\n";
+                }
+                download(new Blob([buffer]), "matched_records.tsv", "text/plain");
+            }
         },
         (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
+            this.setState({isLoaded: true,error,});
         }
-      );
-  }
+    );   
+
+ }
 
 
   handleTitleClick = (e) => {
@@ -88,6 +148,32 @@ class DatasetPage extends Component {
     this.setState(tmpState);
   };
 
+
+  getTableView = (tableData) => {
+
+    var tableCols = [];
+    var tableRows = [];
+    for (var i in tableData){
+      var row =  tableData[i];
+      if (i == 0){
+        for (var j in row){
+          var f = (j == 0 ? "id" : row[j]);
+          tableCols.push({
+              field:f, headerName:f, minWidth:225, headerClassName:"dgheader",
+              cellClassName:"dgcell"});
+        }
+      }
+      else{
+        var o = {}
+        for (var j in row){
+          var f = (j == 0 ? "id" : tableData[0][j]);
+          o[f] = row[j];
+        }
+        tableRows.push(o)
+      }
+    }
+    return (<Tableview cols={tableCols} rows={tableRows}/>);
+  }
 
 
 
@@ -101,61 +187,60 @@ class DatasetPage extends Component {
     const extractObj = ("record" in resObj ? resObj.record.extract : undefined);
     const bcoObj = ("record" in resObj ? resObj.record.bco : undefined);
     const historyObj = ("record" in resObj ? resObj.record.history : undefined);
-   
-
+  
 
     var readMe = (extractObj !== undefined ? extractObj.readme : undefined); 
     var downloadUrl = (extractObj !== undefined ? extractObj.downloadurl : undefined);
     var bcoTitle = (extractObj !== undefined ? extractObj.title : undefined);
     var bcoDescription = (extractObj !== undefined ? extractObj.description : undefined);
 
-    var tabHash = {
-        "sampleview":{
-          title:"Sample View",
-          cn:""
-        },
-        "bcoview":{
-          title:"BCO JSON",
-          cn:(<pre>{JSON.stringify(bcoObj, null, 4)}</pre>)
-        },
-        "readme":{
-          title:"README",
-          cn:(<pre>{readMe}</pre>)
-        },
-        "downloads":{
-          title:"DOWNLOADS",
-          cn:(
-            <ul style={{margin:"20px 0px 100px 20px"}}>
-              <li><Link to={downloadUrl} className="reglink" target="_">Download dataset file</Link></li>
-            </ul>
-          )
-        }
-      };
-
-      tabHash.sampleview.cn = "";    
+    var tabHash = {};
+    if (this.props.rowList.length > 0){
+      tabHash["resultview"] = {title:"Matched Records", cn:""};
       if (extractObj !== undefined){
-        if(extractObj.sampledata.type === "table"){
-          tabHash.sampleview.cn = (
-            <Chart 
-              width={'100%'}
-            chartType="Table" 
-            loader={<div>Loading Chart</div>}
-            data={extractObj.sampledata.data}
-            options={{showRowNumber: false, width: '100%', height: '100%'}}
-            rootProps={{ 'data-testid': '1' }}   
-            />
-          )
+        if(extractObj.resultdata.type === "table"){
+          tabHash.resultview.cn = (<div>{this.getTableView(extractObj.resultdata.data)}</div>);
         }
         else{
-          //tabHash.sampleview.cn = (<div><pre>{extractObj.sampledata.data}</pre></div>);
-          tabHash.sampleview.cn = <Markup content={extractObj.sampledata.data}/>;
-        }  
+          tabHash.resultview.cn = (
+            <div style={{fontSize:"14px"}}><pre>{extractObj.resultdata.data}</pre></div>
+          );
+        }
       }
+    }
+    
+    tabHash["contentview"] = {title:"All Records",cn:""};
+    if (extractObj !== undefined){
+      if(extractObj.alldata.type === "table"){
+        tabHash.contentview.cn = this.getTableView(extractObj.alldata.data);
+      }
+      else{
+        tabHash.contentview.cn = (
+          <div style={{fontSize:"14px"}}><pre>{extractObj.alldata.data}</pre></div>
+        );
+      }
+    }
+
+    tabHash["bcoview"] = {
+      title:"BCO JSON",
+      cn:(<pre style={{whiteSpace:"pre-wrap"}}>{JSON.stringify(bcoObj, null, 4)}</pre>)
+    };
+    tabHash["readme"] = {title:"README",cn:(<pre>{readMe}</pre>)};
 
 
-      var tabTitleList= [];
-      var tabContentList = [];
-      for (var tabId in tabHash){
+    var downloadItems = [];
+    downloadItems.push(<li><Link to={"#"} className="reglink" onClick={this.handleDownloadBco}>Download BCO</Link></li>);
+    if (this.props.rowList.length > 0) {
+        downloadItems.push(<li><Link to={"#"} className="reglink" onClick={this.handleDownloadMatchedRecords}>Download matched records</Link></li>);
+
+    }
+    downloadItems.push(<li><Link to={downloadUrl} className="reglink" target="_">Download dataset file</Link></li>);
+    tabHash["downloads"] = {title:"DOWNLOADS",cn:(<ul style={{margin:"20px 0px 100px 20px"}}>{downloadItems}</ul>)};
+
+
+    var tabTitleList= [];
+    var tabContentList = [];
+    for (var tabId in tabHash){
         var activeFlag = (tabId === this.state.tabidx ? "active" : "" );
         var btnStyle = {width:"100%", fontSize:"15px", color:"#333", border:"1px solid #ccc"};
         btnStyle.color = (activeFlag === "active" ? "#990000" : "#333");
@@ -163,7 +248,7 @@ class DatasetPage extends Component {
         btnStyle.borderBottom = (activeFlag === "active" ? "1px solid #fff" : "1px solid #ccc");
         tabTitleList.push(
           <li key={"tab-"+tabId} className="nav-item" role="presentation" 
-            style={{width:"25%"}}>
+            style={{width:"20%"}}>
             <button className={"nav-link " + activeFlag} 
             id={tabId + "-tab"}  data-bs-toggle="tab" 
             data-bs-target={"#sample_view"} type="button" role="tab" aria-controls={"sample_view-cn"} aria-selected="true"
@@ -182,7 +267,7 @@ class DatasetPage extends Component {
         </div>
       );
     }
-        
+
     var selectedFileName = "";
     var verSelector = "";
     if (historyObj !== undefined){
@@ -217,10 +302,7 @@ class DatasetPage extends Component {
     return (
       <div className="pagecn">
         <Alertdialog dialog={this.state.dialog} onClose={this.handleDialogClose}/>
-
-        <div className="leftblock" style={{width:"100%", 
-          margin:"60px 0px 0px 0px", 
-          fontSize:"17px", borderBottom:"1px solid #ccc"}}>
+        <div className="leftblock" style={{width:"100%", borderBottom:"1px solid #ccc"}}>
           <DoubleArrowOutlinedIcon style={{color:"#2358C2", fontSize:"17px" }}/>
           &nbsp;
           <Link to="/" className="reglink">HOME </Link> 
@@ -236,7 +318,8 @@ class DatasetPage extends Component {
 
         <div className="leftblock" 
           style={{width:"100%", margin:"20px 0px 0px 0px"}}>
-          <ul className="nav nav-tabs" id="myTab" role="tablist" style={{width:"50%"}}>
+          <ul className="nav nav-tabs" id="myTab" role="tablist" 
+            style={{width:"70%", border:"0px dashed orange"}}>
             {tabTitleList}
           </ul>
           <div className="tab-content" id="myTabContent" 

@@ -1,0 +1,3 @@
+
+ ... started loading c_extract  [2023-08-14 13:17:23.903946]
+ ... finished loading 15/15 documents to c_extract_v-1.52 (from extractdb) [2023-08-14 13:17:23.937890]

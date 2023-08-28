@@ -1,0 +1,3 @@
+
+ ... started loading c_assemblyqc  [2023-07-12 06:25:38.884811]
+ ... finished loading 305/305 documents to c_assemblyqc (from assemblyqcdb) [2023-07-12 06:25:39.237385]

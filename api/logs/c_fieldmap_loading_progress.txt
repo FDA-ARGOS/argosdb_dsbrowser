@@ -1,0 +1,3 @@
+
+ ... started loading c_fieldmap  [2023-07-12 06:25:43.715934]
+ ... finished loading 448/448 documents to c_fieldmap (from fieldmapdb) [2023-07-12 06:25:44.095093]
